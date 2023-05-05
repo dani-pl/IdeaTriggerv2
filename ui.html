@@ -1,0 +1,217 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/thomas-lowry/figma-plugin-ds/dist/figma-plugin-ds.css">
+
+
+<style>
+body {
+  padding: 20px;
+}
+h1   {
+  font-size:x-large;
+  align-self: center;
+}
+
+#suggestions_section {
+  height: auto;
+}
+#suggestions_buttons {
+  display:inline-block;
+  padding: 10px;
+}
+#suggestions_top_line {
+  display:inline;
+}
+.suggestion {
+  padding: 10px;
+  display:inline-block;
+}
+.favourite {
+  padding: 10px;
+  display:inline-block;
+}
+.icon-button {
+  width: fit-content;
+}
+
+.top_line_element {
+  display: inline-block;
+  align-self: auto;
+
+}
+
+#slidercontainer {
+  width: max-content;
+}
+
+#refresh_button {
+  padding-left: 40px;
+  width: fit-content;
+  text-align: center;
+}
+
+#slidercontainer {
+  padding-bottom: 20px;
+  padding-left: 15px;
+}
+
+</style>
+
+<body>
+  <h1>APPLE EATING</h1>
+  <div id="suggestions_section">
+    
+    <div id="suggestions_top_line">
+      <div class="top_line_element">
+        <h3>AI-GENERATED SUGGESTIONS</h3>
+      </div>
+    </div>
+
+    <div id="suggestions_buttons">
+      <div class="suggestion">
+        <label class='button button--secondary' id="suggestion1">
+          Riding a Horse
+          <div class="icon-button" id="suggestion1">
+            <div class="icon icon--star-off"></div>
+          </div>
+        </label>
+      </div>
+      <div class="suggestion">
+        <label class='button button--secondary' id="suggestion2">
+          Lettuce
+          <div class="icon-button" id="suggestion2">
+            <div class="icon icon--star-off"></div>
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <div id="slidercontainer">
+      <label for="myRange"> Random</label>
+      <input type="range" min="1" max="100" value="50" class="slider" id="myRange" aria-valuemax="something">
+      <label for="myRange"> Topic related </label>
+    </div>
+
+    <div id="refresh_button">
+      <button class='button button--primary' id="refresh_button">
+        Generate new words
+        <div class="icon icon--swap" id="suggestion2"></div>
+      </button>
+    </div>
+
+  </div>
+
+  
+  <div id="favourite-words-section">
+
+
+    <div>
+      <h3 class="top_line_element">
+        FAVOURITE WORDS
+      </h3>
+    </div>
+
+    <div class="favourite">
+      <label class='button button--secondary' id="favourite1">
+        <div class="icon-button" id="favourite1">
+          <div class="icon icon--close"></div>
+        </div>
+        With the mouth
+      </label>
+    </div>
+
+
+    <div class="favourite"> 
+      <label class='button button--secondary' id="favourite2">
+        <div class="icon-button" id="favourite2">
+          <div class="icon icon--close"></div>
+        </div>
+        Space
+      </label>
+    </div>
+
+
+    <div class="favourite">
+      <label class='button button--secondary' id="favourite3">
+        <div class="icon-button" id="favourite3">
+          <div class="icon icon--close"></div>
+        </div>
+        Knife
+      </label>
+    </div>
+
+    <div class="favourite">
+      <label class='button button--secondary' id="favourite4">
+        <div class="icon-button" id="favourite4">
+          <div class="icon icon--close"></div>
+        </div>
+        Mash with avocado
+      </label>
+    </div>
+
+  </div>
+
+  <script src=“./node_modules/openai/configuration.ts”></script>
+  <script src=“./node_modules/openai/api.ts”></script>
+  <script type="module"> 
+
+  import {Configuration} from "./node_modules/openai/configuration.ts"
+  import {OpenAIApi} from "./node_modules/openai/api.ts"
+  
+  document.getElementById('refresh_button').onclick = () => {
+      console.log("The refresh button is working")
+
+      const prompt = "Act as a creative AI, that provides ideas for an ideation session given the  topic: How you can eat an apple."+
+      " The ideas should not consist of more than 2 or 3 words, and all of them should be different enough from each other."+
+      " Provide all the ideas in different lines. Write just two ideas!"
+      const words = gptRequest(prompt)
+      //const words = gptFake()
+
+      const buttonIconHTML1 = "<div class='icon-button' id='suggestion1'> <div class='icon icon--star-off'></div></div>"
+      const buttonIconHTML2 = " <div class='icon-button' id='suggestion2'> <div class='icon icon--star-off'></div></div>"
+      document.getElementById('suggestion1').innerHTML = words[0] + buttonIconHTML1
+      document.getElementById('suggestion2').innerHTML = words[1] + buttonIconHTML2
+    }
+
+    function gptFake(){
+      const RANDOM_WORDS=[
+      "Riding a horse",
+      "Knife",
+      "With the mouth",
+      "Fork",
+      "Enjoying the view",
+      "In a mountain",
+      "During sunny day",
+      "Peacefully",
+      "Mash with Avocado",
+      "Space",
+      "Cutting in pieces",
+      "Sharing with someone",
+      "Nature",
+      "Carefully"
+      ]
+        const position1 = Math.floor(Math.random()*RANDOM_WORDS.length)
+        const position2 = Math.floor(Math.random()*(RANDOM_WORDS.length-1))+1;
+        if(position1==position2) position2=position1-1
+        return [RANDOM_WORDS[position1], RANDOM_WORDS[position2]]
+    }
+    async function gptRequest(prompt, model="gpt-3.5-turbo"){
+
+      const openai =
+        new OpenAIApi(new Configuration({
+          apiKey: "the key"
+
+      }))
+
+      openai.createChatCompletion({
+          model: model,
+          messages: [{ role:"user", content: prompt}]
+      }).then(res => {
+          console.log(res)
+          if(res != undefined){
+            const response= res?.data?.choices[0]?.message?.content
+            console.log(response)
+            return response
+          }
+        })
+    }
+  </script>
+</body>

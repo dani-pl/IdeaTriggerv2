@@ -1,0 +1,13 @@
+{
+  "name": "IdeaTriggerv2",
+  "id": "1235567855733385492",
+  "api": "1.0.0",
+  "main": "dist/code.js",
+  "capabilities": [],
+  "enableProposedApi": false,
+  "editorType": [
+    "figma",
+    "figjam"
+  ],
+  "ui": "ui.html"
+}
